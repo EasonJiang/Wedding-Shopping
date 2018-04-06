@@ -19,9 +19,6 @@ customerContoller.customerSession = (req, res, next) => {
  * @param {*} next 
  */
 customerContoller.login = (req, res, next) => {
-    
-
-    console.log('login ..........req.req.session:', req.session);
     console.log('login ..........req.body:', req.body);
     const { userName, password } = req.body;
     if (!userName || !password) {
@@ -36,21 +33,14 @@ customerContoller.login = (req, res, next) => {
             responseMessage(res, 200, 2, 'User or password is not correct');
             return;
         }
-
-        // req.session.regenerate(function (err) {
-            // if (err) {
-            //     responseMessage(res, 200, 2, 'Login Failed');
-            // }
-            //login successul, response the userInfo
-            let userInfo = {};
-            userInfo._id = customerInfo._id;
-            userInfo.type = customerInfo.type;
-            userInfo.userName = customerInfo.userName;
-            userInfo.email = customerInfo.email;
-            req.session.email = customerInfo.email;
-            console.log('req.session:', req.session);
-            responseMessage(res, 200, 0, 'Login sucessfull');
-        // });
+        console.log('login-------customerInfo:', customerInfo)
+        let userInfo = {};
+        userInfo._id = customerInfo._id;
+        userInfo.type = customerInfo.type;
+        userInfo.userName = customerInfo.userName;
+        userInfo.email = customerInfo.email;
+        responseMessage(res, 200, 0, 'Login sucessfull',userInfo);
+        return;
 
     }).catch((err) => {
         console.log('err:', err);
@@ -66,7 +56,7 @@ customerContoller.login = (req, res, next) => {
  */
 customerContoller.singUp = (req, res, next) => {
     const { userName, email, password, address, phoneNumber } = req.body;
-    console.log('post req.body:', req.session);
+    console.log('post req.body:', req.body);
     if (!userName || !password || !email) {
         responseMessage(res, 400, 2, 'User Name or Password or email  can not empty');
         return;
@@ -76,8 +66,9 @@ customerContoller.singUp = (req, res, next) => {
         email
     }).then((customerInfo) => {
         if (customerInfo) {
+            console.log('customerInfo:', customerInfo)
             /* customer already regisered */
-            responseMessage(res, 200, 1, 'You already regisered');
+            responseMessage(res, 200, -1, 'You already regisered');
             return;
         } else {
             /* save customer information */

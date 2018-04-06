@@ -1,17 +1,40 @@
 import {actionTypes} from './actionTypes';
 
-export const getUserSessionAction = (data) => {
+/**
+ * get user session
+ * @param {} userInfo 
+ */
+export const getUserSessionAction = (userInfo) => {
   
     return {
       type: actionTypes.GET_USER_SESSION,
-      data: data,
+      userInfo: userInfo,
     }
   };
 
-  export const getUserSessionSuccessAction = (data) => {
-    console.log('&&&&&&&&',JSON.stringify(data));
+  export const getUserSessionSuccessAction = (userInfo) => {
+    console.log('&&&&&&&&',JSON.stringify(userInfo));
     return {
       type: actionTypes.GET_USER_SESSION_SUCCESS,
-      data: data,
+      userInfo: userInfo,
+    }
+  };
+
+  /**
+   * 
+   */
+  export const userLoginAction = (userInfo) => {
+    console.log('userLoginAction+++++',userInfo);
+    return {
+      type: actionTypes.USER_LOGIN,
+      userInfo: userInfo,
+    }
+  };
+
+  export const userLoginSuccessAction = (userInfo) => {
+    console.log('userLoginSuccessAction::',JSON.stringify(userInfo));
+    return {
+      type: actionTypes.USER_LOGIN_SUCCESS,
+      userInfo: userInfo,
     }
   };

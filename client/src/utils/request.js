@@ -19,7 +19,7 @@ export default function request(method, url, body) {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Access-Token': sessionStorage.getItem('access_token') || '89elileffiiwe,s,dnf39853498' 
+      'Access-Token':  sessionStorage.getItem('access_token')||'89elileffiiwe,s,dnf39853498' 
     },
     body
   })
@@ -28,6 +28,7 @@ export default function request(method, url, body) {
         return Promise.reject('Unauthorized.');
       } else {
         const token = res.headers.get('access-token');
+        console.log('token-------------Client:',token);
         if (token) {
           sessionStorage.setItem('access_token', token);
         }

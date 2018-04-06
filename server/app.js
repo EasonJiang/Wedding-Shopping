@@ -9,6 +9,8 @@ import './config/db';
 const jsonServer = require('json-server');
 const server = jsonServer.create();
 const router = jsonServer.router(path.join(__dirname, 'db.json'));
+console.log('router',router);
+console.log('__dirname',__dirname);
 const middlewares = jsonServer.defaults();
 
 server.use(jsonServer.bodyParser);
@@ -50,6 +52,6 @@ const app = express();
 server.use(require('./utils/auth'));
 app.use(server);
 app.use(bodyParser.json());
-app.use('/api/user/',routes.usersRoutes);
+app.use('/user/',routes.usersRoutes);
 
 export default app;
