@@ -1,23 +1,11 @@
 import express from 'express';
 const path = require('path');
-// import cookieParser from 'cookie-parser';
-// import session from 'express-session';
 import bodyParser from 'body-parser';
 import routes from './routes';
 import proxy from 'http-proxy-middleware';
 import './config/db';
 import expressJwt from "express-jwt";
-// import jsonServer from 'json-server';
 import jwks from  'jwks-rsa';
-
-
-
-// const server = jsonServer.create();
-// const router = jsonServer.router(path.join(__dirname, 'db.json'));
-// const middlewares = jsonServer.defaults();
-
-// server.use(jsonServer.bodyParser);
-// server.use(middlewares);
 
 const app = express();
 
