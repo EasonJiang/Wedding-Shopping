@@ -2,10 +2,10 @@ import React from 'react';
 import { Dialog, Input } from 'react-toolbox/lib/';
 import { login, singup } from '../../utils/http/userInfoRequest';
 import { connect } from 'react-redux';
-import { userLoginAction } from '../../redux/action/appState'
-import { bindActionCreators } from 'redux'
+import { userLoginAction } from '../../redux/action/appState';
+import { bindActionCreators } from 'redux';
 
-class Login extends React.Component {
+export default class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,42 +19,15 @@ class Login extends React.Component {
         this.setState({ ...this.state, [name]: value });
     };
 
-    async handleToggle(type) {
-        //user does not login, 
-        let result = {};
-        let userInfo = {
+    getUserInput= ()=>({
             userName: this.state.name || '',
             password: this.state.password || '',
             email: this.state.email,
             phone: this.state.phone,
-        };
+    })
 
-        //
-        if (type === 'signup' || type === 'signup' && this.state.signup) {
-            if (this.state.signup) {
-                result = await singup(userInfo);
-
-            } else {
-                this.setState({
-                    ...this.state,
-                    signup: true
-                });
-                return
-            }
-        } else {
-            if (this.state.signup) {
-                this.setState({
-                    ...this.state,
-                    signup: false
-                });
-                return;
-            }
-            this.props.userLoginAction(userInfo);
-        }
-
-        // if (result && result.code < 0) {
-        if (!this.props.userInfo) {
-            console.log('failed:', result);
+    showTheError(result){
+        console.log('failed:', result);
             this.setState({
                 ...this.state,
                 error: result.message
@@ -65,16 +38,38 @@ class Login extends React.Component {
                     error: ''
                 });
             }, 1500);
-            return;
-        } else {
-            this.props.active()
-        }
+    }
+
+    async handleToggleSingup() {
+        this.setState({
+                    ...this.state,
+                    signup: true
+                });
+        
 
     }
 
+    async handleToggleLogin() {
+            if (this.state.signup) {
+                this.setState({
+                    ...this.state,
+                    signup: false
+                });
+                return;
+            }
+            
+            const result = await login(this.getUserInput());
+            console.log('result:',result);
+            if(result.code < 0){
+                this.showTheError(result);
+                return;
+            }
+            this.props.active();
+    }
+
     actions = [
-        { label: "Login", raised: true, accent: true, floating: true, onClick: this.handleToggle.bind(this, 'login') },
-        { label: "Dont't have an account?Signup", onClick: this.handleToggle.bind(this, 'signup') }
+        { label: "Login", raised: true, accent: true, floating: true, onClick: this.handleToggleLogin.bind(this) },
+        { label: "Dont't have an account?Signup", onClick: this.handleToggleSingup.bind(this) }
     ];
 
     render() {
@@ -102,15 +97,16 @@ class Login extends React.Component {
         );
     }
 }
-const mapStateToProps = (state) => {
-    return { userInfo: state.userReducer.userInfo.data }
-}
+// const mapStateToProps = (state) => {
+//     return { userInfo: state.userReducer.userInfo.data }
+// }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        userLoginAction: bindActionCreators(userLoginAction, dispatch)
-    }
-}
+// const mapDispatchToProps = (dispatch) => {
+//     return {
+//         userLoginAction: bindActionCreators(userLoginAction, dispatch),
+//         userSignUpAction: bindActionCreators(userLoginAction, dispatch)
+//     }
+// }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+// export default connect(mapStateToProps, mapDispatchToProps)(Login);

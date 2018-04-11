@@ -7,8 +7,8 @@ export const getUserSession = () => {
     return get('api/user')
 }
 
-export const  login= (userInfo) =>{
-    console.log('login:-------******',userInfo);
+export const  login= async (userInfo) =>{
+    
     if (!userInfo) {
         return error(-2);
     }

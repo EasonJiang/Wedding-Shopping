@@ -9,6 +9,5 @@ module.exports = {
     responseMessage : (res,http_code=500, code=3, message="server error", data={}) => {
         let jsonData = {code,message, data};
          res.status(http_code).json(jsonData);
-         console.log('-------responseMessage:',message,http_code);
     }
 };

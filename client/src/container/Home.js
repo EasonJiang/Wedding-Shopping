@@ -4,12 +4,13 @@ import { bindActionCreators } from 'redux'
 import Footer from './Footer';
 import { getUserSessionAction } from '../redux/action/appState'
 import Routes from '../router/routes'
+import { Layout } from 'react-toolbox';
 
 const Home = () => (
-    <div>
+    <Layout>
         <Header />
         <Routes />
         <Footer />
-    </div>
+    </Layout>
 );
 export default Home;

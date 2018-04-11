@@ -1,12 +1,11 @@
 import db from '../models';
 import { MD5_SUFFIX, md5, responseMessage } from '../utils/utils';
-
+import jwt from "jsonwebtoken";
 const customerContoller = {};
 
 customerContoller.customerSession = (req, res, next) => {
     console.log('login ..........req.req.session:', req.session);
     if (req && req.session && req.session.customerInfo) {
-        console.log("customerSession:");
         responseMessage(res, 200, 4, 'already Login');
         return;
     }
@@ -22,7 +21,7 @@ customerContoller.login = (req, res, next) => {
     console.log('login ..........req.body:', req.body);
     const { userName, password } = req.body;
     if (!userName || !password) {
-        responseMessage(res, 400, 2, 'User Name or Password can not empty');
+        responseMessage(res, 200, -1, 'User Name or Password can not empty');
         return;
     }
     db.customerInfos.findOne({
@@ -30,16 +29,18 @@ customerContoller.login = (req, res, next) => {
         password: md5(password) + MD5_SUFFIX,
     }).then((customerInfo) => {
         if (!customerInfo) {
-            responseMessage(res, 200, 2, 'User or password is not correct');
+            responseMessage(res, 200, -1, 'User or password is not correct');
             return;
         }
-        console.log('login-------customerInfo:', customerInfo)
-        let userInfo = {};
-        userInfo._id = customerInfo._id;
-        userInfo.type = customerInfo.type;
-        userInfo.userName = customerInfo.userName;
-        userInfo.email = customerInfo.email;
-        responseMessage(res, 200, 0, 'Login sucessfull',userInfo);
+
+        let data = {};
+        let authToken = jwt.sign({
+            username: customerInfo.userName,
+            password: md5(password) + MD5_SUFFIX
+        },
+            "secret");
+        data = { token: authToken, userInfo: customerInfo }
+        responseMessage(res, 200, 0, 'Login sucessfull', data);
         return;
 
     }).catch((err) => {
@@ -68,7 +69,7 @@ customerContoller.singUp = (req, res, next) => {
         if (customerInfo) {
             console.log('customerInfo:', customerInfo)
             /* customer already regisered */
-            responseMessage(res, 200, -1, 'You already regisered');
+            responseMessage(res, 200, -1, 'You already regisered.please Login');
             return;
         } else {
             /* save customer information */
@@ -80,7 +81,13 @@ customerContoller.singUp = (req, res, next) => {
             });
             customerInfos.save()
                 .then((customerInfo) => {
-                    const data = { ...customerInfo };
+                    let data = {};
+                    let authToken = jwt.sign({
+                        username: customerInfo.userName,
+                        password: md5(password) + MD5_SUFFIX
+                    },
+                        "secret");
+                    data = { token: authToken, userInfo: customerInfo }
                     responseMessage(res, 200, 0, 'signup sucessful', data);
                 }).catch(err => responseMessage(res));
         }

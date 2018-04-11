@@ -7,6 +7,7 @@ import 'whatwg-fetch';
 export function* getUserSessionAsync() {
   // ajax
   const json = yield call(getUserSession, 'getUserSession');
+  
   if (json) {
     yield put(getUserSessionSuccessAction(json));
   } else {
@@ -21,6 +22,7 @@ export function* getUserSessionAsync() {
 export function* userLogAsync(userInfo) {
   // ajax
   const json = yield call(login, userInfo.userInfo);
+  console.log("json:",json);
   if (json) {
     yield put(userLoginSuccessAction(json));
   } else {

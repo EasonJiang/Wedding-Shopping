@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { AppBar, Navigation, Button, Avatar } from 'react-toolbox/lib';
+import { AppBar, Avatar,Navigation, Button } from 'react-toolbox/lib';
 import Login from './login';
-// import {getUserSessionAction} from '../../redux/action/appState'
-// import { bindActionCreators } from 'redux';
+import MyProfile from './myProfile'
 import {connect} from 'react-redux';
 
 const GithubIcon = () => (
@@ -23,7 +22,7 @@ const linkComponent = (route, label, accent, click) => (
   </Link>
 );
 
-class HearNavBar extends React.Component {
+export default class HearNavBar extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -33,48 +32,8 @@ class HearNavBar extends React.Component {
       aAccent: true,
       lAccent: true,
       showLogin:false,
-      showDrawer:false,
     }
   }
-
-  userCards() {
-    return (
-        <Card style={{ width: '350px' }}>
-            <CardTitle
-                avatar="https://placeimg.com/80/80/animals"
-                title="Avatar style title"
-                subtitle="Subtitle here"
-            />
-            <CardMedia
-                aspectRatio="wide"
-                image="https://placeimg.com/800/450/nature"
-            />
-            <CardTitle
-                title="Title goes here"
-                subtitle="Subtitle here"
-            />
-            <CardText>{dummyText}</CardText>
-            <CardActions>
-                <Button label="Action 1" />
-                <Button label="Action 2" />
-            </CardActions>
-        </Card>
-    )
-};
-
-handleDrawer(){
-    this.setState({handleToggle: !this.state.handleToggle});
-}
-drawer() {
-    return (
-        <div>
-            <Button label='Show Drawer' raised accent onClick={this.handleToggle} />
-            <Drawer active={this.state.showDrawer} onOverlayClick={this.handleToggle}>
-                {this.userCards()}
-            </Drawer>
-        </div>
-    )
-};
 
   handleChange = (name, value) => {
     this.setState({ ...this.state, [name]: value });
@@ -82,17 +41,13 @@ drawer() {
 
   handleToggle = () => {
     // if user already login,dispaly the uesrInfo
-    debugger
-    if(this.props.userInfo){
-      this.handleChange('showDrawer',true);
-    }else
-      this.setState({showLogin: true});
-      return;
+    console.log('this.state.showLogin:',this.state.showLogin);
+      this.setState({showLogin: !this.state.showLogin});
   }
 
   render() {
     return (
-      <AppBar leftIcon={<GithubIcon />} onRightIconClick={()=>this.handleToggle()} rightIcon={<MeIcon />}>
+      <AppBar leftIcon={<GithubIcon />} onRightIconClick={this.handleToggle.bind(this)} rightIcon={<MeIcon />}>
         <Navigation type='horizontal' >
           {linkComponent('/', 'Home', this.state.hAccent, () => this.setState({ hAccent: false, wAccent: true, oAccent: true, aAccent: true}))}
           {linkComponent('/WeddingDress', 'Wedding Dress', this.state.wAccent, () => this.setState({ hAccent: true, wAccent: false, oAccent: true, aAccent: true, }))}
@@ -100,25 +55,13 @@ drawer() {
           {linkComponent('/', 'About us', this.state.aAccent, () => this.setState({ hAccent: true, wAccent: true, oAccent: true, aAccent: false,  }))}
         </Navigation>
         {
-          this.state.showLogin?<Login active={()=>this.setState({showLogin:false})}/>:null
+          this.state.showLogin?
+          localStorage.getItem('userInfo')?<MyProfile userInfo={this.state.userInfo} active={()=>this.handleToggle()}/>
+          :<Login active={this.handleToggle}/>
+          :null
         }
       </AppBar>
     )
 
   }
 }
-
-// const mapStateToProps = (state)=>{
-//   return {userInfo:state.userInfo}
-// }
-
-// const mapDispatchToProps = (dispatch) =>{
-//   return {
-//       getUserSession:bindActionCreators(getUserSessionAction,dispatch)
-//   }
-// }
-
-
-export default connect()(HearNavBar);
-
-

@@ -6,6 +6,9 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux';
 import store from './redux/sotre/store';
 import Home from './container/Home';
+import '../ReactotronConfig'
+
+
 const rootEl = document.getElementById('app');
 
 const render = () => {

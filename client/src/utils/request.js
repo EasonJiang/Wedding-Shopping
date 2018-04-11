@@ -1,5 +1,5 @@
 import { hashHistory } from 'react-router';
-
+import { setItem } from '../utils/utils'
 /**
  * 
  * @param {http request method} method 
@@ -19,7 +19,7 @@ export default function request(method, url, body) {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'Access-Token':  sessionStorage.getItem('access_token')||'89elileffiiwe,s,dnf39853498' 
+      'Access-Token': sessionStorage.getItem('access_token') || '89elileffiiwe,s,dnf39853498'
     },
     body
   })
@@ -27,14 +27,18 @@ export default function request(method, url, body) {
       if (res.status === 401) {
         return Promise.reject('Unauthorized.');
       } else {
-        const token = res.headers.get('access-token');
-        console.log('token-------------Client:',token);
-        if (token) {
-          sessionStorage.setItem('access_token', token);
-        }
-        return res.json();
+         return res.json();
       }
-    }).catch(err => console.log('Error:', err));
+    })
+    .then((json)=>{
+      console.log('token-------------Client:', json);
+        if (json.data.token) {
+          setItem('access_token', json.data.token);
+          setItem('userInfo', JSON.stringify(json.data.userInfo));
+        }
+        return json;
+    })
+    .catch(err => console.log('Error:', err));
 }
 
 
